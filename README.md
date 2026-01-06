@@ -8,14 +8,23 @@ This integration enables Claude Code to automatically generate flowcharts, seque
 
 ## Features
 
-✅ **Automatic Diagram Generation**: Triggered by keywords and context analysis
-✅ **Multiple Diagram Types**: Flowcharts, sequence, architecture, state diagrams
-✅ **MCP Coordination**: Integrates with Serena, Sequential, and Context7
-✅ **Markdown Output**: Mermaid code blocks ready for rendering
-✅ **Interactive HTML**: Auto-generates zoomable HTML files with pan/zoom support
-✅ **Version Control**: Diagrams saved with timestamps for tracking evolution
-✅ **Interactive Refinement**: Generate → Review → Refine workflow
-✅ **Cross-Session Memory**: Diagram patterns stored via Serena MCP
+### 🎯 Core Capabilities
+
+| Feature | Description |
+|---------|-------------|
+| **🤖 Automatic Generation** | Triggered by keywords and context analysis - just ask Claude to visualize |
+| **📊 Multiple Diagram Types** | Flowcharts, sequence diagrams, architecture diagrams, and state diagrams |
+| **🔄 Interactive Refinement** | Generate → Review → Refine workflow with iterative improvements |
+| **💾 Version Control** | Diagrams saved with timestamps for tracking evolution over time |
+
+### 🚀 Advanced Features
+
+| Feature | Description |
+|---------|-------------|
+| **🎨 Interactive HTML** | Auto-generates zoomable HTML files with pan/zoom controls and keyboard shortcuts |
+| **🔗 MCP Coordination** | Seamless integration with Serena (code analysis), Sequential (reasoning), Context7 (documentation) |
+| **📝 Markdown Output** | Clean Mermaid code blocks ready for GitHub, GitLab, VS Code, and other renderers |
+| **🧠 Cross-Session Memory** | Diagram patterns stored via Serena MCP for intelligent reuse and consistency |
 
 ## Installation
 
