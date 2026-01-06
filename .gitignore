@@ -1,0 +1,27 @@
+# macOS system files
+.DS_Store
+**/.DS_Store
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# Internal documentation (not for users)
+IMPLEMENTATION_SUMMARY.md
+TEST_PLAN.md
+SECURITY_ANALYSIS_REPORT.md
+
+# Node modules (if any)
+node_modules/
+npm-debug.log*
+
+# Generated HTML files (optional - remove this if you want to commit HTML)
+claudedocs/diagrams/*.html
+
+# Temporary files
+*.tmp
+*.log
+
+# OS files
+.Spotlight-V100
+.Trashes
+Thumbs.db
