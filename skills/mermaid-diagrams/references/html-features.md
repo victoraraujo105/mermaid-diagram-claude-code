@@ -525,4 +525,4 @@ node utils/generate-html.js diagram.md
 
 ---
 
-**Interactive HTML diagrams make complex systems easier to understand and share!** 🎨✨
+**Interactive HTML diagrams make complex systems easier to understand and share.**

@@ -141,7 +141,7 @@ function main() {
     // Write HTML file
     fs.writeFileSync(outputFile, htmlContent, 'utf8');
 
-    console.log(`✓ Generated: ${outputFile}`);
+    console.log(`[OK] Generated: ${outputFile}`);
     console.log(`  Title: ${diagramInfo.title}`);
     console.log(`  Type: ${diagramInfo.type}`);
     console.log(`  Features: Pan/Zoom, Keyboard shortcuts, Responsive`);

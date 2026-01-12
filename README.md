@@ -1,282 +1,117 @@
-# Mermaid Diagram Support for Claude Code
+# Mermaid Diagrams Plugin for Claude Code
 
-Complete integration of Mermaid diagram generation into Claude Code with automatic triggers, MCP coordination, and cross-session persistence.
-
-## Overview
-
-This integration enables Claude Code to automatically generate flowcharts, sequence diagrams, architecture diagrams, and state diagrams using the Mermaid MCP server. Diagrams are generated from code analysis, natural language descriptions, or manual commands.
+A Claude Code plugin for generating Mermaid diagrams from code analysis and natural language descriptions with interactive HTML output.
 
 ## Features
 
-### 🎯 Core Capabilities
-
-| Feature | Description |
-|---------|-------------|
-| **🤖 Automatic Generation** | Triggered by keywords and context analysis - just ask Claude to visualize |
-| **📊 Multiple Diagram Types** | Flowcharts, sequence diagrams, architecture diagrams, and state diagrams |
-| **🔄 Interactive Refinement** | Generate → Review → Refine workflow with iterative improvements |
-| **💾 Version Control** | Diagrams saved with timestamps for tracking evolution over time |
-
-### 🚀 Advanced Features
-
-| Feature | Description |
-|---------|-------------|
-| **🎨 Interactive HTML** | Auto-generates zoomable HTML files with pan/zoom controls and keyboard shortcuts |
-| **🔗 MCP Coordination** | Seamless integration with Serena (code analysis), Sequential (reasoning), Context7 (documentation) |
-| **📝 Markdown Output** | Clean Mermaid code blocks ready for GitHub, GitLab, VS Code, and other renderers |
-| **🧠 Cross-Session Memory** | Diagram patterns stored via Serena MCP for intelligent reuse and consistency |
+- **Multiple Diagram Types**: Flowcharts, sequence diagrams, architecture/class diagrams, state diagrams
+- **Automatic Type Detection**: Detects diagram type from keywords in your request
+- **Code Analysis**: Generate architecture diagrams from actual codebase structure
+- **Interactive HTML**: Pan, zoom, and keyboard shortcuts for diagram exploration
+- **MCP Integration**: Uses mcp-mermaid server for diagram generation
 
 ## Installation
 
-**Quick Install:** See [INSTALL.md](INSTALL.md) for complete step-by-step installation guide.
+### Prerequisites
 
-### Quick Start
+- Node.js v16+
+- Claude Code CLI
 
-1. **Install MCP Server**
-   ```bash
-   npm install -g mcp-mermaid
-   ```
+### Install Plugin
 
-2. **Configure Your Tool**
+```bash
+# Clone the plugin
+git clone https://github.com/victor/mermaid-diagram-claude-code ~/.claude/plugins/mermaid-diagrams
 
-   **For Claude Desktop App:**
+# Or use with --plugin-dir for testing
+claude --plugin-dir /path/to/mermaid-diagram-claude-code
+```
 
-   Add to Claude Desktop configuration file:
-   - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-   - **Linux:** `~/.config/Claude/claude_desktop_config.json`
-   - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-
-   ```json
-   {
-     "mcpServers": {
-       "mermaid": {
-         "command": "npx",
-         "args": ["-y", "mcp-mermaid"]
-       }
-     }
-   }
-   ```
-
-   **For Claude Code (CLI):**
-
-   Claude Code automatically detects globally installed MCP servers. No additional configuration needed - just install the package globally (step 1) and restart.
-
-3. **Copy Skill File (Optional)**
-   ```bash
-   cp skills/diagram.md ~/.claude/skills/
-   ```
-
-4. **Restart (if using Claude Desktop)**
-
-   Claude Desktop requires restart. Claude Code (CLI) does not.
-
-For detailed installation instructions, troubleshooting, and verification steps, see **[INSTALL.md](INSTALL.md)**.
+The plugin automatically configures the mcp-mermaid MCP server via `.mcp.json`.
 
 ## Usage
 
-### Automatic Triggering
+### Automatic (Skill-Based)
 
-Claude Code automatically detects when diagrams would be helpful:
+Just ask Claude to create a diagram:
 
 ```
 "Show me the architecture of the auth module"
-→ Generates architecture/class diagram
-
 "Explain the login flow"
-→ Generates flowchart
-
 "How does the API authentication work?"
-→ Generates sequence diagram
-
 "Visualize the user session states"
-→ Generates state diagram
 ```
 
-### Manual Commands
+### Command: /diagram
 
-Use the `/diagram` skill for explicit requests:
+Use the `/diagram` command for explicit requests:
 
 ```
 /diagram flowchart for user registration
 /diagram sequence for POST /api/login
 /diagram architecture of auth module
 /diagram state for shopping cart lifecycle
+/diagram comprehensive for payment system
 ```
 
-### Auto-Detection Examples
+### Diagram Types
 
-**Architecture Diagrams** - Keywords: `architecture`, `structure`, `hierarchy`, `components`
-```
-"Show the class structure"
-"Diagram the system architecture"
-"Visualize component relationships"
-```
+| Type | Keywords | Use For |
+|------|----------|---------|
+| **Flowchart** | flow, process, algorithm, workflow | Processes, decisions, algorithms |
+| **Sequence** | api, request, interaction, endpoint | API calls, component communication |
+| **Architecture** | architecture, structure, hierarchy | System structure, class relationships |
+| **State** | state, lifecycle, transitions | State machines, lifecycles |
 
-**Flowcharts** - Keywords: `flow`, `process`, `algorithm`, `workflow`
-```
-"How does the registration process work?"
-"Show the password reset flow"
-"Diagram the checkout algorithm"
-```
+## Output
 
-**Sequence Diagrams** - Keywords: `api`, `request`, `interaction`, `communication`
-```
-"Trace the API request flow"
-"Show how components communicate"
-"Diagram the authentication endpoint"
-```
-
-**State Diagrams** - Keywords: `state`, `lifecycle`, `transitions`, `session`
-```
-"Show the order lifecycle states"
-"Diagram session state transitions"
-"Visualize the connection states"
-```
-
-## Integration with SuperClaude Framework
-
-### MCP Server Coordination
-
-**Serena MCP** → Code structure analysis → Architecture diagrams
-```
-Serena.get_symbols_overview("src/auth/")
-→ Extract classes, methods, relationships
-→ Mermaid generates classDiagram
-```
-
-**Sequential MCP** → Complex reasoning → Flowcharts
-```
-Sequential analyzes algorithm logic
-→ Identify steps, decisions, branches
-→ Mermaid generates flowchart
-```
-
-**Context7 MCP** → Framework patterns → Architecture
-```
-Context7 retrieves Next.js routing patterns
-→ Understand framework conventions
-→ Mermaid visualizes architecture
-```
-
-### MODE Integration
-
-The integration includes a new **Diagram Generation Mode** that activates when:
-- Diagram keywords are detected
-- Code structure visualization is needed
-- Flow documentation is requested
-- Architecture understanding is required
-
-See [`MODE_Diagram_Generation.md`](~/.claude/MODE_Diagram_Generation.md) for complete behavioral specifications.
-
-## File Organization
-
-All generated diagrams are saved to:
+Diagrams are saved to `claudedocs/diagrams/`:
 
 ```
 claudedocs/diagrams/
-├── architecture_auth-module_2025-12-23.md     # Markdown (version control)
-├── architecture_auth-module_2025-12-23.html   # Interactive HTML (zoom support)
-├── flowchart_login-process_2025-12-23.md
-├── flowchart_login-process_2025-12-23.html
-├── sequence_api-request_2025-12-23.md
-├── sequence_api-request_2025-12-23.html
-├── state_user-session_2025-12-23.md
-└── state_user-session_2025-12-23.html
+├── flowchart_login_2025-01-12.md      # Markdown (version control)
+├── flowchart_login_2025-01-12.html    # Interactive HTML
+├── sequence_api-auth_2025-01-12.md
+└── sequence_api-auth_2025-01-12.html
 ```
 
-**Naming Convention**:
-- Markdown: `{type}_{context}_{YYYY-MM-DD}.md`
-- HTML: `{type}_{context}_{YYYY-MM-DD}.html`
+### Interactive HTML Features
 
-## Interactive HTML Diagrams
+- **Pan & Zoom**: Mouse wheel zoom, click and drag
+- **Keyboard Shortcuts**: `+` zoom in, `-` zoom out, `R` reset, `F` fit to screen, `I` info panel
+- **Touch Support**: Mobile-friendly
 
-**NEW**: Each diagram is automatically generated as an interactive HTML file with:
+## Plugin Structure
 
-### Features
-- **Pan & Zoom**: Mouse wheel zoom, click and drag to pan
-- **Keyboard Shortcuts**: `+` zoom in, `-` zoom out, `R` reset, `F` fit to screen
-- **Info Panel**: Description and related files (`I` to toggle)
-- **Professional Design**: Clean interface with responsive layout
-- **Touch Support**: Mobile/tablet friendly
-
-### Quick Start
-
-1. **Generate a diagram** (automatically creates both .md and .html):
-   ```
-   "Show me a flowchart for user login"
-   ```
-
-2. **Open the HTML file**:
-   ```bash
-   open claudedocs/diagrams/flowchart_user-login_2025-12-23.html
-   ```
-
-3. **Interact**:
-   - Zoom with mouse wheel
-   - Pan by dragging
-   - Press `F` to fit diagram to screen
-   - Press `I` to see description
-
-### Manual HTML Generation
-
-If you only have a markdown file:
-```bash
-node utils/generate-html.js claudedocs/diagrams/diagram.md
 ```
-
-See [`HTML_GUIDE.md`](HTML_GUIDE.md) for complete HTML features and usage.
-
-## Output Format
-
-Each diagram file includes:
-
-```markdown
-# Diagram Title
-
-**Generated**: 2025-12-23 14:30
-**Type**: flowchart | sequence | architecture | state
-**Context**: What this diagram represents
-
-## Diagram
-
-\`\`\`mermaid
-{mermaid code here}
-\`\`\`
-
-## Description
-Natural language explanation of the diagram
-
-## Related Files
-- Source files analyzed
-- Related documentation
+mermaid-diagrams/
+├── .claude-plugin/
+│   └── plugin.json           # Plugin manifest
+├── .mcp.json                  # MCP server configuration
+├── commands/
+│   └── diagram.md            # /diagram command
+├── skills/
+│   └── mermaid-diagrams/
+│       ├── SKILL.md          # Diagram generation skill
+│       └── references/
+│           ├── templates.md   # Mermaid syntax templates
+│           ├── examples.md    # Workflow examples
+│           └── html-features.md
+├── templates/
+│   └── diagram-template.html # HTML template
+├── utils/
+│   └── generate-html.js      # HTML generator
+├── INSTALL.md
+└── README.md
 ```
-
-## Documentation
-
-### Core Files
-
-- **[`MCP_Mermaid.md`](~/.claude/MCP_Mermaid.md)** - Complete MCP server integration guide
-- **[`MODE_Diagram_Generation.md`](~/.claude/MODE_Diagram_Generation.md)** - Behavioral mode specifications
-- **[`skills/diagram.md`](skills/diagram.md)** - `/diagram` skill documentation
-- **[`EXAMPLES.md`](EXAMPLES.md)** - Comprehensive workflow examples
-- **[`TEMPLATES.md`](TEMPLATES.md)** - Mermaid syntax templates and quick reference
-
-### SuperClaude Framework Files
-
-All integration files have been added to `~/.claude/`:
-- `MCP_Mermaid.md` - MCP server guide
-- `MODE_Diagram_Generation.md` - Auto-trigger behaviors
 
 ## Examples
 
-### Example 1: Architecture from Code
+### Architecture from Code
 
-**Input:**
-```
-Show me the structure of the auth module
-```
+**Request**: "Show me the structure of the auth module"
 
-**Output:**
+**Output**:
 ```mermaid
 classDiagram
     class AuthService {
@@ -288,247 +123,82 @@ classDiagram
         +generateToken(user)
         +verifyToken(token)
     }
-    class UserRepository {
-        +findByEmail(email)
-        +save(user)
-    }
     AuthService --> TokenManager
-    AuthService --> UserRepository
 ```
 
-**File:** `claudedocs/diagrams/architecture_auth-module_2025-12-23.md`
+### Flowchart from Description
 
-### Example 2: Flowchart from Description
+**Request**: "/diagram flowchart for user login with 2FA"
 
-**Input:**
-```
-/diagram flowchart for user login with 2FA
-```
-
-**Output:**
+**Output**:
 ```mermaid
 flowchart TD
-    Start([User Login]) --> Creds[Enter Credentials]
-    Creds --> Validate{Valid?}
-    Validate -->|No| Error[Show Error]
-    Validate -->|Yes| Check2FA{2FA Enabled?}
+    Start([Login]) --> Creds[Enter Credentials]
+    Creds --> Valid{Valid?}
+    Valid -->|No| Error[Show Error]
+    Valid -->|Yes| Check2FA{2FA Enabled?}
     Check2FA -->|No| Success([Login])
     Check2FA -->|Yes| Send2FA[Send Code]
-    Send2FA --> Enter2FA[Enter Code]
-    Enter2FA --> Verify{Code Valid?}
-    Verify -->|No| Error
+    Send2FA --> Verify{Code Valid?}
     Verify -->|Yes| Success
-    Error --> Creds
+    Verify -->|No| Error
 ```
 
-**File:** `claudedocs/diagrams/flowchart_user-login_2025-12-23.md`
+### Sequence from API
 
-### Example 3: Sequence from API
+**Request**: "Diagram the POST /api/login endpoint flow"
 
-**Input:**
-```
-Diagram the POST /api/login endpoint flow
-```
-
-**Output:**
+**Output**:
 ```mermaid
 sequenceDiagram
-    participant Client
-    participant API
-    participant Auth
-    participant DB
-
     Client->>API: POST /api/login
     API->>Auth: Validate credentials
     Auth->>DB: Query user
     DB-->>Auth: User data
     Auth->>Auth: Verify password
-    Auth->>Auth: Generate token
-    Auth-->>API: {user, token}
+    Auth-->>API: Token
     API-->>Client: 200 OK
 ```
 
-**File:** `claudedocs/diagrams/sequence_login-api_2025-12-23.md`
-
-## Templates
-
-See [`TEMPLATES.md`](TEMPLATES.md) for comprehensive Mermaid syntax templates including:
-
-- Flowchart patterns (basic, loops, error handling, decision trees)
-- Sequence diagrams (client-server, authentication, microservices, async)
-- Architecture diagrams (classes, services, components, modules)
-- State diagrams (basic FSM, session lifecycle, order processing)
-- Advanced patterns (subgraphs, bidirectional, parallel paths)
-- Styling examples
-
 ## Rendering Diagrams
 
-Mermaid diagrams can be rendered in:
-
-### VS Code
-Install the "Markdown Preview Mermaid Support" extension
-
-### GitHub/GitLab
-Automatically renders mermaid code blocks in markdown files
-
-### mermaid-cli (Optional)
-Export to PNG/SVG:
+### View Interactive HTML
 ```bash
-npm install -g @mermaid-js/mermaid-cli
-mmdc -i diagram.md -o diagram.png
+open claudedocs/diagrams/flowchart_login_2025-01-12.html
 ```
 
+### VS Code
+Install "Markdown Preview Mermaid Support" extension
+
+### GitHub/GitLab
+Automatically renders mermaid code blocks in markdown
+
 ### Online
-- [Mermaid Live Editor](https://mermaid.live/)
-- Paste diagram code for instant preview
+Paste diagram code at [mermaid.live](https://mermaid.live/)
 
-## Best Practices
+## Manual HTML Generation
 
-### 1. Start Simple
-- Begin with high-level structure
-- Add detail iteratively
-- Use subgraphs for organization
+If you only have the markdown file:
 
-### 2. Choose Right Diagram Type
-- **Flowcharts**: Algorithms, processes, decisions
-- **Sequence**: API calls, component interactions
-- **Architecture**: System structure, class hierarchies
-- **State**: Lifecycles, state machines, transitions
-
-### 3. Keep Diagrams Focused
-- < 20 nodes per diagram for readability
-- Split complex systems into multiple diagrams
-- Create overview + detailed diagrams for large systems
-
-### 4. Add Context
-- Include natural language explanations
-- Link to related source files
-- Document assumptions and decisions
+```bash
+node utils/generate-html.js claudedocs/diagrams/diagram.md
+```
 
 ## Troubleshooting
 
 ### MCP Server Not Loading
-
-**Issue**: Mermaid diagrams not generating
-
-**Solution**:
-1. Verify installation: `npm list -g mcp-mermaid`
-2. Check configuration in `~/Library/Application Support/Claude/claude_desktop_config.json`
+1. Verify mcp-mermaid is installed: `npm list -g mcp-mermaid`
+2. Check `.mcp.json` configuration
 3. Restart Claude Code
 
 ### Diagrams Not Auto-Triggering
-
-**Issue**: Manual `/diagram` works, but automatic detection doesn't
-
-**Solution**:
 1. Use specific keywords: "architecture", "flow", "sequence", "state"
 2. Be explicit: "Show me the architecture" vs "Explain the code"
-3. Check `MODE_Diagram_Generation.md` for trigger patterns
 
 ### Invalid Mermaid Syntax
-
-**Issue**: Diagram won't render
-
-**Solution**:
-1. Validate syntax at [Mermaid Live Editor](https://mermaid.live/)
+1. Validate at [mermaid.live](https://mermaid.live/)
 2. Check for missing quotes, brackets, or semicolons
-3. Use templates from `TEMPLATES.md` as reference
-
-## Advanced Features
-
-### Comprehensive Documentation
-
-Generate multiple diagram types for complete system documentation:
-
-```
-"Provide comprehensive diagrams for the authentication system"
-
-→ Generates:
-  - Architecture diagram (structure)
-  - Flowchart (login process)
-  - Sequence diagram (API flow)
-  - State diagram (session lifecycle)
-  - Overview document linking all diagrams
-```
-
-### Cross-Session Memory
-
-Using Serena MCP integration:
-- Diagram patterns stored in project memory
-- Evolution tracking across sessions
-- Reference previous diagrams in context
-
-### Framework-Specific Diagrams
-
-Leverage Context7 for framework patterns:
-```
-"Show Next.js routing architecture"
-→ Uses Next.js conventions from Context7
-→ Generates accurate framework-specific diagram
-```
-
-### Emoji Support
-
-All generated diagrams now support emojis using system fonts:
-
-**Supported emoji fonts:**
-- Apple Color Emoji (macOS/iOS)
-- Segoe UI Emoji (Windows)
-- Noto Color Emoji (Linux/Android)
-
-**Usage examples:**
-```mermaid
-flowchart TD
-    Start([🚀 Start Process]) --> Auth{🔐 Authenticated?}
-    Auth -->|✅ Yes| Dashboard[📊 Dashboard]
-    Auth -->|❌ No| Login[🔑 Login Page]
-    Dashboard --> Success([✨ Success])
-```
-
-**Recommended emojis for diagrams:**
-- Process: 🚀 ⚙️ 🔄 📝
-- Security: 🔐 🔑 🛡️ ⚠️
-- Success/Error: ✅ ❌ ⚡ 💥
-- Data: 📊 📈 📉 💾
-- Communication: 📧 💬 📞 🔔
-- Users: 👤 👥 🙋 💼
-
-## Testing
-
-See the test file for integration verification:
-```bash
-# Run test to verify all components
-# Tests Serena + Sequential + Mermaid coordination
-```
-
-## Contributing
-
-Improvements welcome:
-- Additional diagram templates
-- Enhanced auto-trigger patterns
-- Framework-specific examples
-- Integration patterns
-
-## Resources
-
-### Official Documentation
-- [Mermaid Documentation](https://mermaid.js.org/)
-- [hustcc/mcp-mermaid GitHub](https://github.com/hustcc/mcp-mermaid)
-
-### SuperClaude Framework
-- `~/.claude/CLAUDE.md` - Framework entry point
-- `~/.claude/MCP_*.md` - MCP server integration guides
-- `~/.claude/MODE_*.md` - Behavioral mode specifications
-
-### Related Tools
-- Serena MCP: Code structure analysis
-- Sequential MCP: Complex reasoning
-- Context7 MCP: Framework documentation
 
 ## License
 
-This integration follows the SuperClaude framework conventions and is compatible with all existing MCP servers and behavioral modes.
-
----
-
-**Quick Start**: Just ask Claude Code to show you a flow, architecture, or diagram - it will automatically detect the need and generate appropriate Mermaid visualizations!
+MIT

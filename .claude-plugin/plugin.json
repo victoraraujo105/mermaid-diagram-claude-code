@@ -1,0 +1,11 @@
+{
+  "name": "mermaid-diagrams",
+  "version": "1.0.0",
+  "description": "Generate Mermaid diagrams from code analysis and natural language descriptions with interactive HTML output",
+  "author": {
+    "name": "Victor"
+  },
+  "license": "MIT",
+  "keywords": ["mermaid", "diagrams", "flowchart", "sequence", "architecture", "visualization"],
+  "repository": "https://github.com/victor/mermaid-diagram-claude-code"
+}
